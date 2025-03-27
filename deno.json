@@ -1,5 +1,6 @@
 {
   "imports": {
+    "dotenv": "jsr:@std/dotenv",
     "hono": "jsr:@hono/hono@^4.7.5",
     "mongoose": "npm:mongoose@8.13.0"
   },
