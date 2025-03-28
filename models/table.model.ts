@@ -4,7 +4,7 @@ const tableSchema = new Schema(
     {
         status: {
             type: String,
-            enum: ["available", "occupied"],
+            enum: ["available", "occupied", "unavailable"],
             default: "available",
         },
         number: {

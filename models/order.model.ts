@@ -9,6 +9,7 @@ const orderSchema = new Schema(
         },
         items: [
             {
+                _id: false,
                 menuId: {
                     type: Schema.Types.ObjectId,
                     ref: "Menu",

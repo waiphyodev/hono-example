@@ -1,5 +1,5 @@
 const responseHelper = {
-    ok: (data: any, message?: string) => ({
+    ok: (data?: any, message?: string) => ({
         code: 200,
         status: "OK",
         message: message ? message : "Success",

@@ -1,12 +1,12 @@
 import { Context } from "hono";
-import Table from "../models/table.model.ts";
+import Order from "../models/order.model.ts";
 import responseHelper from "../helpers/response.helper.ts";
 
-export const createTable = async (ctx: Context) => {
+export const createOrder = async (ctx: Context) => {
     const body = await ctx.req.json();
 
     try {
-        await Table.create(body);
+        await Order.create(body);
 
         return ctx.json(responseHelper.created(), 201);
     } catch (error) {
@@ -14,9 +14,9 @@ export const createTable = async (ctx: Context) => {
     }
 };
 
-export const getTableList = async (ctx: Context) => {
+export const getOrderList = async (ctx: Context) => {
     try {
-        const list = await Table.find();
+        const list = await Order.find();
 
         return ctx.json(responseHelper.ok({ data: list }), 200);
     } catch (error) {
@@ -24,11 +24,11 @@ export const getTableList = async (ctx: Context) => {
     }
 };
 
-export const getTableDetail = async (ctx: Context) => {
+export const getOrderDetail = async (ctx: Context) => {
     const id = ctx.req.param("id");
 
     try {
-        const detail = await Table.findById(id);
+        const detail = await Order.findById(id);
 
         return ctx.json(responseHelper.ok(detail), 200);
     } catch (error) {
@@ -36,13 +36,13 @@ export const getTableDetail = async (ctx: Context) => {
     }
 };
 
-export const updateTable = async (ctx: Context) => {
+export const updateOrder = async (ctx: Context) => {
     const id = ctx.req.param("id");
     const body = await ctx.req.json();
-    const { status, number } = body;
+    const { tableId, items, status, totalAmount } = body;
 
     try {
-        const detail = await Table.findByIdAndUpdate(id, { status, number });
+        const detail = await Order.findByIdAndUpdate(id, { tableId, items, status, totalAmount });
         if (!detail) return ctx.json(responseHelper.notFound(), 404);
 
         return ctx.json(responseHelper.ok(), 200);
@@ -51,11 +51,11 @@ export const updateTable = async (ctx: Context) => {
     }
 };
 
-export const deleteTable = async (ctx: Context) => {
+export const deleteOrder = async (ctx: Context) => {
     const id = ctx.req.param("id");
 
     try {
-        const detail = await Table.findByIdAndDelete(id);
+        const detail = await Order.findByIdAndDelete(id);
         if (!detail) return ctx.json(responseHelper.notFound(), 404);
 
         return ctx.json(responseHelper.ok(), 200);
