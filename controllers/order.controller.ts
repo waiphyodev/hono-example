@@ -1,16 +1,32 @@
 import { Context } from "hono";
 import Order from "../models/order.model.ts";
 import responseHelper from "../helpers/response.helper.ts";
+import mongoose from "mongoose";
+import Table from "../models/table.model.ts";
 
 export const createOrder = async (ctx: Context) => {
     const body = await ctx.req.json();
+    const { tableId } = body;
+    if (!tableId) return ctx.json(responseHelper.badRequest(), 400);
+
+    const session = await mongoose.startSession();
 
     try {
-        await Order.create(body);
+        session.startTransaction();
+
+        await Order.create([body], { session });
+
+        await Table.findByIdAndUpdate(tableId, { status: "occupied" }, { session });
+
+        await session.commitTransaction();
 
         return ctx.json(responseHelper.created(), 201);
     } catch (error) {
+        await session.abortTransaction();
+
         if (error instanceof Error) return ctx.json(responseHelper.unknown(error.message), 500);
+    } finally {
+        await session.endSession();
     }
 };
 
@@ -41,13 +57,27 @@ export const updateOrder = async (ctx: Context) => {
     const body = await ctx.req.json();
     const { tableId, items, status, totalAmount } = body;
 
+    const session = await mongoose.startSession();
+
     try {
-        const detail = await Order.findByIdAndUpdate(id, { tableId, items, status, totalAmount });
+        session.startTransaction();
+
+        const detail = await Order.findByIdAndUpdate(id, { items, status, totalAmount }, { session });
         if (!detail) return ctx.json(responseHelper.notFound(), 404);
+
+        if (status === "completed") {
+            await Table.findByIdAndUpdate(tableId, { status: "available" }, { session });
+        }
+
+        await session.commitTransaction();
 
         return ctx.json(responseHelper.ok(), 200);
     } catch (error) {
+        await session.abortTransaction();
+
         if (error instanceof Error) return ctx.json(responseHelper.unknown(error.message), 500);
+    } finally {
+        await session.endSession();
     }
 };
 
