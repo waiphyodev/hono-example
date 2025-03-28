@@ -1,4 +1,5 @@
-import { Schema, models, model } from "mongoose";
+import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 
 const menuSchema = new Schema(
     {
@@ -33,6 +34,6 @@ const menuSchema = new Schema(
     }
 );
 
-const Menu = models.Menu || model("Menu", menuSchema);
+const Menu = mongoose.models.Menu || model("Menu", menuSchema);
 
 export default Menu;

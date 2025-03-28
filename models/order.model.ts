@@ -1,4 +1,5 @@
-import { Schema, models, model } from "mongoose";
+import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 
 const orderSchema = new Schema(
     {
@@ -39,6 +40,6 @@ const orderSchema = new Schema(
     }
 );
 
-const Order = models.Order || model("Order", orderSchema);
+const Order = mongoose.models.Order || model("Order", orderSchema);
 
 export default Order;

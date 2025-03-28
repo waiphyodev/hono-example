@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Schema, model } from "mongoose";
 
 const tableSchema = new Schema(
@@ -18,6 +19,6 @@ const tableSchema = new Schema(
     }
 );
 
-const Table = model("Table", tableSchema);
+const Table = mongoose.models.Table || model("Table", tableSchema);
 
 export default Table;
