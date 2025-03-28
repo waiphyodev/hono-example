@@ -18,7 +18,7 @@ export const getTableList = async (ctx: Context) => {
     try {
         const list = await Table.find();
 
-        return ctx.json(responseHelper.ok({ data: list }), 200);
+        return ctx.json(responseHelper.ok({ list }), 200);
     } catch (error) {
         if (error instanceof Error) return ctx.json(responseHelper.unknown(error.message), 500);
     }
